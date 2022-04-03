@@ -1,9 +1,15 @@
-﻿# Ignore everything by default
-*
-!*/
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
 
-# Whitelist
-!.gitignore
-
-#Including everything in assets folder
-!Assets/
+/Library
+/Logs
+/UserSettings
+/Temp
+/ProjectSettings
+/Packages
+/obj/Debug
+/Asteroids Revamped.sln
+/Assembly-CSharp.csproj
+/.vsconfig
+/.vs/Asteroids Revamped/v16
