@@ -13,6 +13,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float speed = 5.0f;
 
+    [SerializeField]
+    [Range(0.0f, 1.0f)]
+    private float lerpSpeed = 0.2f;
+
     private Rigidbody2D rb;
 
     // Start is called before the first frame update
@@ -24,48 +28,38 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Movement
         float horizontalMovement = Input.GetAxis("Horizontal");
         float verticalMovement = Input.GetAxis("Vertical");
 
+        // Rotation
+        if (Input.GetMouseButton(0) || horizontalMovement != 0 || verticalMovement != 0) {
+            Vector2 reqDirection;
+
+            if (Input.GetMouseButton(0)) {
+                reqDirection = (Camera.main.ScreenToWorldPoint(Input.mousePosition) -
+                    transform.position).normalized;
+            }
+            else {
+                reqDirection = new Vector2(horizontalMovement, verticalMovement);
+            }
+
+            if (((Vector2)transform.up - reqDirection).magnitude < 0.001) {
+                transform.up = reqDirection;
+            }
+            transform.up = Vector2.Lerp(transform.up, reqDirection, lerpSpeed);
+            //transform.up = reqDirection;
+            
+            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S)) {
+                Debug.Log("TUP: " + transform.up);
+                Debug.Log("RED: " + reqDirection);
+            }
+        }
+
+        // Movement
         horizontalMovement = BoundMovement(gameObject.transform.position.x, xBounds, horizontalMovement);
-        verticalMovement   = BoundMovement(gameObject.transform.position.y, yBounds, verticalMovement);
+        verticalMovement = BoundMovement(gameObject.transform.position.y, yBounds, verticalMovement);
 
         rb.velocity = new Vector2(horizontalMovement * speed, verticalMovement * speed);
-
-        // Rotation to mouse click
-
-        //if (Input.GetMouseButtonDown(0)) {
-        //    Vector2 mousePos = Input.mousePosition;
-        //    Vector2 curPos = transform.position;
-        //    Vector2 reqDirection = mousePos - curPos;
-
-        //    Vector2 curDirection = transform.rotation.eulerAngles;
-        //    Debug.Log("Mouse Position: " + mousePos);
-        //    Debug.Log("Current Position: " + curPos);
-
-        //    Debug.Log("Current Direction: " + curDirection);
-        //    Debug.Log("Required Direction: " + reqDirection);
-
-
-        //    float angle = Vector2.SignedAngle(curDirection, reqDirection);
-        //    Debug.Log("Angle of Rot: " + angle);
-
-        //    transform.Rotate(0.0f, 0.0f, angle);
-
-        //    //Vector2 pos = Camera.main.WorldToScreenPoint(transform.position);
-
-        //    //float angle = Mathf.Atan2(mousePos.y, pos.x) * Mathf.Rad2Deg;
-        //    //transform.rotation = Quaternion.FromToRotation(transform.position, mousePos);
-        //}
-        if (Input.GetMouseButton(0)) {
-            Vector2 reqDirection = (Camera.main.ScreenToWorldPoint(Input.mousePosition) - 
-                transform.position).normalized;
-
-            transform.up = reqDirection;
-
-            //transform.up = Vector2.Lerp(transform.up, reqDirection, Time.deltaTime);
-        }
     }
 
     private bool SameSign(float a, float b)

@@ -305,6 +305,7 @@ MonoBehaviour:
   xBounds: 8.75
   yBounds: 5
   speed: 10
+  lerpSpeed: 0.25
 --- !u!50 &827008493
 Rigidbody2D:
   serializedVersion: 4
