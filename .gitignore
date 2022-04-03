@@ -1,0 +1,9 @@
+﻿# Ignore everything by default
+*
+!*/
+
+# Whitelist
+!.gitignore
+
+#Including everything in assets folder
+!Assets/
