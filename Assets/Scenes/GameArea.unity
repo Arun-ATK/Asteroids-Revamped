@@ -302,10 +302,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5aeb222c5cdc1249a9b2bd69f85b4f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xBounds: 8.75
-  yBounds: 5
+  xBounds: 8.7
+  yBounds: 4.75
   speed: 10
-  lerpSpeed: 0.25
+  rotationLerpSpeed: 0.075
 --- !u!50 &827008493
 Rigidbody2D:
   serializedVersion: 4

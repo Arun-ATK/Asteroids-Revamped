@@ -4,18 +4,13 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField]
     private float xBounds;
-
-    [SerializeField]
     private float yBounds;
-
-    [SerializeField]
     private float speed = 5.0f;
 
     [SerializeField]
     [Range(0.0f, 1.0f)]
-    private float lerpSpeed = 0.2f;
+    private float rotationLerpSpeed = 0.2f;
 
     private Rigidbody2D rb;
 
@@ -40,19 +35,14 @@ public class PlayerController : MonoBehaviour
                     transform.position).normalized;
             }
             else {
-                reqDirection = new Vector2(horizontalMovement, verticalMovement);
+                reqDirection = new Vector2(horizontalMovement, verticalMovement).normalized;
             }
 
-            if (((Vector2)transform.up - reqDirection).magnitude < 0.001) {
-                transform.up = reqDirection;
-            }
-            transform.up = Vector2.Lerp(transform.up, reqDirection, lerpSpeed);
-            //transform.up = reqDirection;
-            
-            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.S)) {
-                Debug.Log("TUP: " + transform.up);
-                Debug.Log("RED: " + reqDirection);
-            }
+            float targetAngle = Vector2.SignedAngle(transform.up, reqDirection);
+            float angle = targetAngle * rotationLerpSpeed;
+            Quaternion reqRotation = Quaternion.Euler(0, 0, angle);
+
+            transform.up = reqRotation * transform.up;
         }
 
         // Movement
