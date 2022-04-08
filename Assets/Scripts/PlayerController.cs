@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private float xBounds;
-    private float yBounds;
-    private float speed = 5.0f;
+    private float xBounds = 8.5f;
+    private float yBounds = 4.5f;
+    private float speed = 10.0f;
 
     [SerializeField]
     [Range(0.0f, 1.0f)]
