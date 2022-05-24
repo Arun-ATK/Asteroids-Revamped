@@ -14,7 +14,7 @@ public class SpawnManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(spawnAsteroid());
+        StartCoroutine(SpawnAsteroid());
     }
 
     // Update is called once per frame
@@ -23,13 +23,23 @@ public class SpawnManager : MonoBehaviour
 
     }
 
-    IEnumerator spawnAsteroid()
+    IEnumerator SpawnAsteroid()
     {
         while (true) {
             int[] spawnLines = { xSpawnLocation, -xSpawnLocation, ySpawnLocation, -ySpawnLocation };
 
             Vector2 spawnPoint;
             int spawnLine = spawnLines[Random.Range(0, spawnLines.Length)];
+
+            /* 
+             * Probably not the best way to select a spawn point.
+             * This method depends on xSpawnLocationa and ySpawnLocation having different values
+             * Hence it only works for rectangular spawn boxes. Won't work if the spawn box is a square.
+             * 
+             * NOTE: Code can also be cleaned up if/when Unity supports switch expressions with
+             *       relational case statements (a or b => expression).
+             */
+
             switch (spawnLine) {
             case xSpawnLocation:
             case -xSpawnLocation:
