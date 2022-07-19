@@ -9,7 +9,7 @@ public class AsteroidBehavior : MonoBehaviour
     private readonly float yMaxTargetPoint = 4.0f;
     private Vector2 targetDirection;
 
-    public float moveSpeed = 0.05f;
+    public float moveSpeed;
 
     // Start is called before the first frame update
     void Start()
@@ -32,5 +32,19 @@ public class AsteroidBehavior : MonoBehaviour
         if (collision.CompareTag("AsteroidBound")) {
             Destroy(gameObject);
         }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Bullet")) {
+            collision.gameObject.GetComponent<BulletController>().HandleAsteroidCollision();
+            HandleBulletCollsion();
+        }
+    }
+
+    private void HandleBulletCollsion()
+    {
+        // TODO: Create smaller asteroids from the current asteroid
+        Destroy(gameObject);
     }
 }

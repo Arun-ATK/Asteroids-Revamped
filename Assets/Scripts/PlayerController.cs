@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private float xBounds = 8.5f;
-    private float yBounds = 4.5f;
+    private readonly float xBounds = 8.5f;
+    private readonly float yBounds = 4.5f;
+    
+    [Header("Ship Properties")]
     private float speed = 10.0f;
+    private int bulletsPerSecond = 3;
 
     [SerializeField]
     [Range(0.0f, 1.0f)]
-    private float rotationLerpSpeed = 0.2f;
+    private float rotationSpeed = 0.2f;
 
     private Rigidbody2D rb;
+
+    private float time = 1;
+
+    public GameObject[] bullets;
 
     // Start is called before the first frame update
     void Start()
@@ -23,29 +30,31 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        time += Time.deltaTime;
         float horizontalMovement = Input.GetAxis("Horizontal");
         float verticalMovement = Input.GetAxis("Vertical");
 
-        // Rotation
-        if (Input.GetMouseButton(0) || horizontalMovement != 0 || verticalMovement != 0) {
-            Vector2 reqDirection;
+        // Pointing at mouse location takes priority over
+        // pointing in the direction of movement
+        // Ship rotates towards mouse location and fires bullets
+        if (Input.GetMouseButton(0)) {
+            Vector2 targetDirection = (Camera.main.ScreenToWorldPoint(Input.mousePosition) -
+                transform.position).normalized;
 
-            if (Input.GetMouseButton(0)) {
-                reqDirection = (Camera.main.ScreenToWorldPoint(Input.mousePosition) -
-                    transform.position).normalized;
+            RotateShip(targetDirection);
+
+            if (time > (1.0f / bulletsPerSecond)) {
+                FireBullet(transform.up);
+                time = 0;
             }
-            else {
-                reqDirection = new Vector2(horizontalMovement, verticalMovement).normalized;
-            }
-
-            float targetAngle = Vector2.SignedAngle(transform.up, reqDirection);
-            float angle = targetAngle * rotationLerpSpeed;
-            Quaternion reqRotation = Quaternion.Euler(0, 0, angle);
-
-            transform.up = reqRotation * transform.up;
+        }
+        // Normal rotation based on movement direction
+        else if (horizontalMovement != 0 || verticalMovement != 0) {
+            Vector2 targetDirection = new Vector2(horizontalMovement, verticalMovement).normalized;
+            RotateShip(targetDirection);
         }
 
-        // Movement
+        // BoundMovement used to ensure player stays within bounds
         horizontalMovement = BoundMovement(gameObject.transform.position.x, xBounds, horizontalMovement);
         verticalMovement = BoundMovement(gameObject.transform.position.y, yBounds, verticalMovement);
 
@@ -57,13 +66,31 @@ public class PlayerController : MonoBehaviour
         return (a >= 0 && b >= 0) || (a < 0 && b < 0);
     }
 
+    // Prevents the player from leaving the play area in a particular axis
     private float BoundMovement(float position, float bound, float movement)
     {
+        // Allow player to move away from the bounding line
+        // Prevent movement that tries to cross bounding line
         if (Mathf.Abs(position) > bound) {
             return (SameSign(movement, position)) ? 0 : movement;
         }
         else {
             return movement;
         }
+    }
+
+    private void RotateShip(Vector2 targetDirection)
+    {
+        float targetAngle = Vector2.SignedAngle(transform.up, targetDirection);
+        float angle = targetAngle * rotationSpeed;
+        Quaternion reqRotation = Quaternion.Euler(0, 0, angle);
+
+        transform.up = reqRotation * transform.up;
+    }
+
+    private void FireBullet(Vector2 targetDirection)
+    {
+        GameObject bullet = Instantiate(bullets[0], transform);
+        bullet.GetComponent<BulletController>().SetDirection(targetDirection);
     }
 }

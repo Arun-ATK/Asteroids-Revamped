@@ -7,7 +7,7 @@ public class SpawnManager : MonoBehaviour
     private const int xSpawnLocation = 10;
     private const int ySpawnLocation = 6;
 
-    public float spawnTimer = 2f;
+    public float spawnTimer;
     public GameObject[] asteroidTypes;
 
 
