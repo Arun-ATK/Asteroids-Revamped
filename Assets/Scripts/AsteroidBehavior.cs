@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class AsteroidBehavior : MonoBehaviour
 {
@@ -11,14 +12,17 @@ public class AsteroidBehavior : MonoBehaviour
 
     public float moveSpeed;
 
+    public GameObject[] Asteroids;
+    public int splitsRemaining;
+
     // Start is called before the first frame update
     void Start()
     {
         Vector2 targetPoint = new(
             Random.Range(-xMaxTargetPoint, xMaxTargetPoint),
             Random.Range(-yMaxTargetPoint, yMaxTargetPoint));
-
         targetDirection = (targetPoint - (Vector2)transform.position).normalized;
+
     }
 
     // Update is called once per frame
@@ -44,7 +48,23 @@ public class AsteroidBehavior : MonoBehaviour
 
     private void HandleBulletCollsion()
     {
-        // TODO: Create smaller asteroids from the current asteroid
+        if (splitsRemaining > 0) {
+            CreateSmallerAsteroids();
+        }
         Destroy(gameObject);
+    }
+
+    private void CreateSmallerAsteroids()
+    {
+        int numOfAsteroids = Random.Range(2, 4);
+        for (int i = 0; i < numOfAsteroids; ++i) {
+            Vector2 spawnPos = (Vector2)transform.position + 
+                new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f));
+
+            Instantiate(Asteroids[splitsRemaining - 1], 
+                spawnPos, 
+                Quaternion.identity);
+            print("Came here");
+        }
     }
 }

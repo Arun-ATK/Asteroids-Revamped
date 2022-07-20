@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1878275322017686026}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -100,6 +100,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
+  Asteroids:
+  - {fileID: 1878275322017686026}
+  - {fileID: 8626012242055156284, guid: d64c0a2261f85554099ee0411f85b09a, type: 3}
+  - {fileID: 7719187800042429662, guid: 8e30d6dc035b08949b0d45ea85817be0, type: 3}
+  splitsRemaining: 0
 --- !u!50 &8640516502782017806
 Rigidbody2D:
   serializedVersion: 4
