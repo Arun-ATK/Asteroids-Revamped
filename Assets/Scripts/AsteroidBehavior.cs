@@ -8,7 +8,7 @@ public class AsteroidBehavior : MonoBehaviour
     [Header("Target Direction")]
     private readonly float xMaxTargetPoint = 8.0f;
     private readonly float yMaxTargetPoint = 4.0f;
-    private Vector2 targetDirection;
+    private Vector2 targetDirection = new();
 
     public float moveSpeed;
 
@@ -18,11 +18,7 @@ public class AsteroidBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Vector2 targetPoint = new(
-            Random.Range(-xMaxTargetPoint, xMaxTargetPoint),
-            Random.Range(-yMaxTargetPoint, yMaxTargetPoint));
-        targetDirection = (targetPoint - (Vector2)transform.position).normalized;
-
+    
     }
 
     // Update is called once per frame
@@ -61,10 +57,25 @@ public class AsteroidBehavior : MonoBehaviour
             Vector2 spawnPos = (Vector2)transform.position + 
                 new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f));
 
-            Instantiate(Asteroids[splitsRemaining - 1], 
+            GameObject asteroid = Instantiate(Asteroids[splitsRemaining - 1], 
                 spawnPos, 
                 Quaternion.identity);
-            print("Came here");
+            asteroid.GetComponent<AsteroidBehavior>().SetTargetDirection(targetDirection);
         }
+    }
+    public void SetTargetDirection()
+    {
+        Vector2 targetPoint = new(
+           Random.Range(-xMaxTargetPoint, xMaxTargetPoint),
+           Random.Range(-yMaxTargetPoint, yMaxTargetPoint));
+        targetDirection = (targetPoint - (Vector2)transform.position).normalized;
+    }
+
+    private void SetTargetDirection(Vector2 initialDirection)
+    {
+        float exitAngle = Random.Range(-90.0f, 90.0f);
+        Quaternion targetRotation = Quaternion.Euler(0, 0, exitAngle);
+
+        targetDirection = targetRotation * initialDirection;
     }
 }

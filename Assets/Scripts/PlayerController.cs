@@ -4,20 +4,21 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("GameArea Bounds")]
     private readonly float xBounds = 8.5f;
     private readonly float yBounds = 4.5f;
     
     [Header("Ship Properties")]
     private float speed = 10.0f;
     private int bulletsPerSecond = 3;
+    private float timeSinceLastBullet = 1;
 
     [SerializeField]
     [Range(0.0f, 1.0f)]
     private float rotationSpeed = 0.2f;
 
     private Rigidbody2D rb;
-
-    private float time = 1;
+    private SpawnManager spawnManager;
 
     public GameObject[] bullets;
 
@@ -25,12 +26,13 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody2D>();
+        spawnManager = GameObject.FindGameObjectWithTag("SpawnManager").GetComponent<SpawnManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        time += Time.deltaTime;
+        timeSinceLastBullet += Time.deltaTime;
         float horizontalMovement = Input.GetAxis("Horizontal");
         float verticalMovement = Input.GetAxis("Vertical");
 
@@ -43,9 +45,9 @@ public class PlayerController : MonoBehaviour
 
             RotateShip(targetDirection);
 
-            if (time > (1.0f / bulletsPerSecond)) {
+            if (timeSinceLastBullet > (1.0f / bulletsPerSecond)) {
                 FireBullet(transform.up);
-                time = 0;
+                timeSinceLastBullet = 0;
             }
         }
         // Normal rotation based on movement direction
@@ -59,6 +61,14 @@ public class PlayerController : MonoBehaviour
         verticalMovement = BoundMovement(gameObject.transform.position.y, yBounds, verticalMovement);
 
         rb.velocity = new Vector2(horizontalMovement * speed, verticalMovement * speed);
+    }
+
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Asteroid")) {
+            print("Player callee");
+            spawnManager.StopSpawning();
+        }
     }
 
     private bool SameSign(float a, float b)

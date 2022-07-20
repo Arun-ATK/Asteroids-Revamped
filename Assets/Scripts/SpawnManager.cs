@@ -7,6 +7,8 @@ public class SpawnManager : MonoBehaviour
     private const int xSpawnLocation = 10;
     private const int ySpawnLocation = 6;
 
+    private Coroutine asteroidSpawner;
+
     public float spawnTimer;
     public GameObject[] asteroidTypes;
 
@@ -14,7 +16,7 @@ public class SpawnManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(SpawnAsteroid());
+        asteroidSpawner = StartCoroutine(SpawnAsteroid());
     }
 
     // Update is called once per frame
@@ -56,12 +58,18 @@ public class SpawnManager : MonoBehaviour
                 break;
             }
 
-            Instantiate(asteroidTypes[Random.Range(0, asteroidTypes.Length)], 
+            GameObject asteroid = Instantiate(asteroidTypes[Random.Range(0, asteroidTypes.Length)], 
                 spawnPoint, 
                 Quaternion.identity);
+            asteroid.GetComponent<AsteroidBehavior>().SetTargetDirection();
             
             yield return new WaitForSeconds(spawnTimer);
         }
     }
 
+    public void StopSpawning()
+    {
+        print("Called");
+        StopCoroutine(asteroidSpawner);
+    }
 }
